@@ -1,0 +1,650 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>CareHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Layout: marketing page, split auth screen, then a dark-sidebar app shell with five views. Calm green, soft cards. */
+:root{
+  --bg:#f6f8f7; --surface:#ffffff; --ink:#0e1b17; --muted:#5a6b65; --line:#e1e8e5;
+  --brand:#1b4d3e; --brand-ink:#ffffff; --mint:#0f9d6e; --mint-soft:#dcf7ea; --mint-ink:#0a6b4a;
+  --side:#0d1b2a; --side-ink:#c9d6e2; --side-muted:#8da2b5; --side-card:#12263a;
+  --safe:#0f3a2e; --safe-line:#17503f; --danger:#c8123a; --danger-soft:#ffe9ee; --amber:#b45309; --amber-soft:#fff3dc;
+  --c1:#2f7de1; --c2:#6a5ae0; --c3:#0f9d6e; --field:#ffffff; --shadow:0 1px 2px rgba(15,40,32,.05),0 8px 24px rgba(15,40,32,.05);
+  --display:'Outfit',system-ui,sans-serif; --body:'Plus Jakarta Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a1310; --surface:#101e19; --ink:#e7f1ed; --muted:#97aca3; --line:#1e322b;
+  --brand:#2c8a6a; --brand-ink:#ffffff; --mint:#3ddc9a; --mint-soft:#12382b; --mint-ink:#6ee7b7;
+  --side:#07100d; --side-card:#0e1c17; --safe:#0d2a21; --safe-line:#18483a; --danger:#ff6b87; --danger-soft:#3a1420; --amber:#f5b25c; --amber-soft:#35260f;
+  --c1:#6aa6ff; --c2:#9a8cff; --c3:#3ddc9a; --field:#0c1814; --shadow:none; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1310; --surface:#101e19; --ink:#e7f1ed; --muted:#97aca3; --line:#1e322b;
+  --brand:#2c8a6a; --brand-ink:#ffffff; --mint:#3ddc9a; --mint-soft:#12382b; --mint-ink:#6ee7b7;
+  --side:#07100d; --side-card:#0e1c17; --safe:#0d2a21; --safe-line:#18483a; --danger:#ff6b87; --danger-soft:#3a1420; --amber:#f5b25c; --amber-soft:#35260f;
+  --c1:#6aa6ff; --c2:#9a8cff; --c3:#3ddc9a; --field:#0c1814; --shadow:none; color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{height:auto}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0}
+button{font:inherit;cursor:pointer;color:inherit}
+a{color:inherit}
+svg{display:block}
+:focus-visible{outline:2px solid var(--mint);outline-offset:2px;border-radius:8px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mint-ink);font-weight:500}
+.wrap{width:100%;max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:11px 18px;font-weight:600;font-size:14.5px;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.lg{padding:15px 24px;font-size:15.5px;border-radius:16px}
+.btn.danger{color:var(--danger);border-color:transparent;background:none;padding:0;font-weight:600}
+.btn.sm{padding:8px 14px;border-radius:12px;font-size:13.5px}
+.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 16px;font-size:13.5px;font-weight:600}
+.pill.emerg{background:var(--danger-soft);color:var(--danger);border:1px solid transparent;text-decoration:none}
+
+/* landing */
+.land-head{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
+.logo{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em;border:0;background:none;padding:0}
+.logo i{width:42px;height:42px;border-radius:13px;background:var(--brand);color:#fff;display:grid;place-items:center;box-shadow:0 8px 20px rgba(27,77,62,.25)}
+.land-nav{display:flex;align-items:center;gap:22px}
+.land-nav .lnk{border:0;background:none;color:var(--muted);font-weight:500;padding:6px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding-block:56px 40px}
+.hero h1{font-size:clamp(42px,6.2vw,76px);font-weight:700;margin-block:18px 22px}
+.hero .lead{font-size:19px;color:var(--muted);max-width:34em}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-block:30px 26px}
+.trust{display:flex;flex-wrap:wrap;gap:20px;color:var(--muted);font-size:13.5px;font-weight:500}
+.trust span{display:inline-flex;align-items:center;gap:8px}
+.trust svg{color:var(--mint)}
+.mock{background:var(--surface);border:1px solid var(--line);border-radius:32px;box-shadow:var(--shadow);padding:20px;min-width:0}
+.mock-head{display:flex;gap:12px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.mock-head .ic{width:40px;height:40px;border-radius:12px;background:var(--mint-soft);color:var(--mint-ink);display:grid;place-items:center}
+.mock-head small{display:block;color:var(--muted);font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--mint);margin-left:auto}
+.bubble{border-radius:20px;padding:14px 18px;max-width:88%}
+.bubble.u{background:var(--brand);color:var(--brand-ink);margin:18px 0 12px auto;width:fit-content}
+.bubble.a{background:var(--bg);color:var(--muted)}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-block:12px}
+.tag{font-size:12.5px;font-weight:600;border-radius:999px;padding:5px 12px;background:var(--mint-soft);color:var(--mint-ink)}
+.tag.warn{background:var(--amber-soft);color:var(--amber)}
+.mock .note{background:var(--bg);border-radius:14px;padding:11px 14px;color:var(--muted);font-size:13.5px;margin-top:6px}
+.sec{padding-block:64px}
+.sec h2{font-size:clamp(30px,4vw,46px);font-weight:700;margin-top:14px;max-width:16em}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);min-width:0}
+.step{min-height:200px;display:flex;flex-direction:column;justify-content:space-between;background:var(--bg);box-shadow:none}
+.step .top{display:flex;justify-content:space-between;color:var(--mint-ink);font-family:var(--mono);font-size:12px}
+.step h3{font-size:22px;margin-bottom:8px}
+.step p,.guard p{color:var(--muted)}
+.guard-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:center}
+.guard-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.guard h3{font-size:18px;display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.guard h3 svg{color:var(--mint)}
+.foot{border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;padding-block:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* auth */
+.auth{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+.auth-l{background:#1b4d3e;color:#fff;padding:48px clamp(24px,5vw,64px);display:flex;flex-direction:column;justify-content:space-between;gap:32px}
+.auth-l .logo{color:#fff}
+.auth-l .logo i{background:rgba(255,255,255,.14);box-shadow:none}
+.auth-l h1{font-size:clamp(36px,4.4vw,58px);font-weight:700;margin-block:18px 20px}
+.auth-l .eyebrow{color:#8ff0c4}
+.auth-l p.lead{color:#bfe4d3;font-size:18px;max-width:26em}
+.auth-l ul{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:12px;color:#e2f6ec}
+.auth-l li{display:flex;gap:12px;align-items:center}
+.auth-r{display:grid;place-items:center;padding:40px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+.auth-box{width:100%;max-width:440px}
+.shield{width:60px;height:60px;border-radius:18px;background:var(--mint-soft);color:var(--brand);display:grid;place-items:center;margin-bottom:24px}
+.auth-box h2{font-size:36px;font-weight:700}
+.auth-box .sub{color:var(--muted);margin-block:8px 24px;font-size:17px}
+label.f{display:block;font-weight:600;font-size:14.5px;margin-top:18px;margin-bottom:8px}
+.in,select.in,textarea.in{width:100%;background:var(--field);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font:inherit;color:var(--ink)}
+textarea.in{resize:vertical;min-height:110px}
+.hint{font-size:12.5px;color:var(--muted);margin-top:6px}
+.err{color:var(--danger);background:var(--danger-soft);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:16px}
+.auth-box .btn.primary{width:100%;justify-content:center;margin-top:22px;padding:16px;font-size:16px;border-radius:16px}
+.swap{margin-top:22px;color:var(--muted)}
+.swap button{border:0;background:none;padding:0;text-decoration:underline;color:inherit}
+
+/* app shell */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:14px max(20px,env(safe-area-inset-right,0px)) 14px max(20px,env(safe-area-inset-left,0px));gap:12px;flex-wrap:wrap}
+.top .logo{font-size:21px}
+.top .logo i{width:36px;height:36px;border-radius:11px;box-shadow:none}
+.top-r{display:flex;gap:10px;align-items:center}
+.iconbtn{width:40px;height:40px;border-radius:50%;border:0;background:none;display:grid;place-items:center;color:var(--muted)}
+.shell{display:grid;grid-template-columns:288px minmax(0,1fr);align-items:start;align-content:start;min-height:calc(100vh - 69px)}
+.side{background:var(--side);color:var(--side-ink);padding:24px 16px;position:sticky;top:69px;min-height:calc(100vh - 69px);display:flex;flex-direction:column;gap:22px}
+.who{background:var(--side-card);border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:18px 20px}
+.who small.eyebrow{color:#5be0a8;font-size:11px}
+.who b{display:block;font-family:var(--display);font-size:22px;color:#fff;margin-top:8px;word-break:break-word}
+.who span{color:var(--side-muted);font-size:14px;word-break:break-all}
+.nav{display:grid;gap:6px}
+.nav a{display:flex;gap:14px;align-items:center;text-decoration:none;padding:13px 18px;border-radius:16px;font-weight:600;color:var(--side-ink)}
+.nav a:hover{background:rgba(255,255,255,.05)}
+.nav a[aria-current="page"]{background:#176148;color:#fff}
+.safety{margin-top:auto;background:var(--safe);border:1px solid var(--safe-line);border-radius:22px;padding:20px;color:#c4e6d8}
+.safety .eyebrow{color:#5be0a8;letter-spacing:.2em;font-weight:700}
+.safety p{font-size:14px;margin-top:12px}
+.main{padding:34px clamp(20px,3.4vw,44px) 56px;min-width:0}
+.main>header{margin-bottom:26px}
+.main h1{font-size:clamp(32px,4.4vw,48px);font-weight:700;margin-top:8px}
+.main .sub{color:var(--muted);margin-top:12px;font-size:16.5px;max-width:42em}
+.row-h{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stat .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;margin-bottom:22px}
+.stat b{display:block;font-family:var(--display);font-size:38px;line-height:1;font-weight:600;letter-spacing:-.02em}
+.stat strong{display:block;margin-top:8px;font-weight:600}
+.stat span{color:var(--muted);font-size:13.5px}
+.two{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;margin-top:18px}
+.chart-card h3{font-size:24px;margin:8px 0 14px}
+.chart-card .top2{display:flex;justify-content:space-between;align-items:baseline}
+.link{border:0;background:none;color:var(--mint-ink);font-weight:600;padding:0;display:inline-flex;gap:6px;align-items:center;text-decoration:none}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.chart-wrap{overflow-x:auto}
+.empty{border:1px dashed var(--line);border-radius:18px;padding:28px;text-align:center;color:var(--muted)}
+.empty .btn{margin-top:14px}
+.steps-card{background:#1b4d3e;border-color:#1b4d3e;color:#fff;display:flex;flex-direction:column;gap:14px}
+.steps-card h3{font-size:30px}
+.steps-card p{color:#c1e5d4}
+.steps-card .link{color:#fff;margin-top:auto}
+
+/* tracker */
+.tgrid{display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:start}
+.card h3.t{font-size:22px}
+.card .sm{color:var(--muted);font-size:14px;margin-top:4px}
+.entry{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--line);border-radius:18px;padding:16px 20px;margin-top:12px}
+.entry b{font-family:var(--display);font-size:21px;font-weight:600;font-variant-numeric:tabular-nums}
+.entry p{color:var(--muted);font-size:14px}
+.entry .note{font-size:13px;margin-top:2px}
+.del{border:0;background:none;color:var(--muted);display:inline-flex;gap:6px;align-items:center;font-size:13.5px;padding:6px}
+.del:hover{color:var(--danger)}
+.saved{color:var(--mint-ink);font-weight:600;margin-left:12px;font-size:14px}
+
+/* library */
+.search{display:flex;gap:12px;margin-bottom:20px}
+.search .in{border-radius:16px;padding:16px 20px;font-size:16px}
+.lib{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.lib .card{display:flex;flex-direction:column;gap:12px}
+.lib .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;gap:8px}
+.lib h3{font-size:21px}
+.lib p{color:var(--muted)}
+.lib .foot2{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;margin-top:auto;font-size:13px;color:var(--muted)}
+.lib .foot2 a{color:var(--mint-ink);font-weight:600;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+
+/* chat */
+.chat{padding:0;overflow:hidden}
+.chat-h{display:flex;gap:14px;align-items:center;padding:18px 24px;border-bottom:1px solid var(--line)}
+.chat-h .ic{width:46px;height:46px;border-radius:14px;background:var(--mint-soft);color:var(--mint-ink);display:grid;place-items:center}
+.chat-h small{display:block;color:var(--muted);font-size:13.5px}
+.ready{margin-left:auto;color:var(--mint-ink);font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center}
+.ready i{width:9px;height:9px;border-radius:50%;background:var(--mint)}
+.msgs{padding:26px 24px;display:flex;flex-direction:column;gap:14px;min-height:380px;max-height:56vh;overflow-y:auto}
+.welcome{margin:auto;text-align:center;max-width:34em;padding:20px 0}
+.welcome svg{margin:0 auto 18px;color:var(--mint)}
+.welcome h2{font-size:28px;margin-bottom:10px}
+.welcome p{color:var(--muted)}
+.chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 18px;font-weight:600;font-size:14px}
+.chip:hover{border-color:var(--mint)}
+.m{max-width:78%;border-radius:20px;padding:14px 18px;white-space:pre-wrap}
+.m.u{align-self:flex-end;background:var(--brand);color:var(--brand-ink)}
+.m.a{align-self:flex-start;background:var(--bg);border:1px solid var(--line)}
+.m.urgent{border-color:var(--danger);background:var(--danger-soft)}
+.m .srcs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.m .srcs a{font-size:12.5px;font-weight:600;border-radius:999px;padding:5px 12px;background:var(--mint-soft);color:var(--mint-ink);text-decoration:none}
+.composer{display:flex;gap:12px;padding:16px 24px;border-top:1px solid var(--line)}
+.composer .in{border-radius:999px}
+.typing{color:var(--muted);font-size:14px}
+
+.qpanel{border-top:1px solid var(--line);padding:18px 24px 22px;background:var(--surface)}
+.qh{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.topics{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.topic{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;color:var(--muted)}
+.topic.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.qlist{display:grid;gap:8px}
+.qbtn{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:13px 16px;font-weight:500}
+.qbtn:hover{border-color:var(--mint)}
+.qbtn svg{flex:none;color:var(--mint-ink)}
+.qbtn.done{color:var(--muted)}
+
+/* profile */
+.pgrid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:18px;align-items:start}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 32px}
+.fgrid label.f{margin-top:20px}
+.check{display:flex;gap:12px;align-items:flex-start;margin-top:22px;color:var(--muted)}
+.check input{width:18px;height:18px;margin-top:3px;accent-color:var(--brand)}
+.privacy{background:var(--mint-soft);border-color:transparent;box-shadow:none}
+.privacy svg{color:var(--mint-ink);margin-bottom:12px}
+.privacy h3{font-size:24px;margin-bottom:10px}
+.privacy p{color:var(--mint-ink);opacity:.9}
+.side-col{display:grid;gap:18px}
+.confirm{background:var(--danger-soft);border-radius:14px;padding:14px;margin-top:14px;display:grid;gap:10px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:14px;font-weight:600;z-index:50}
+
+@media (max-width:980px){
+  .hero,.guard-wrap,.two,.tgrid,.pgrid{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:1fr 1fr}
+  .grid3{grid-template-columns:1fr}
+  .auth{grid-template-columns:1fr}
+  .auth-l{padding-block:32px}
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side,.main{min-width:0}
+  .side{position:static;min-height:0;padding:14px 12px;flex-direction:column;gap:12px}
+  .who{display:none}
+  .nav{display:flex;overflow-x:auto;gap:6px;padding-bottom:2px}
+  .nav a{white-space:nowrap;padding:10px 16px}
+  .safety{display:none}
+  .land-nav .lnk{display:none}
+}
+@media (max-width:640px){
+  .stats,.lib,.fgrid,.guard-grid{grid-template-columns:minmax(0,1fr)}
+  .top .pill.emerg span.long{display:none}
+  .m{max-width:92%}
+  .search{flex-direction:column}
+  .hero{padding-top:28px;gap:36px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="app"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- icons ---------- */
+var P={
+ spark:'<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+ shield:'<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M12 8v5M12 16h.01"/>',
+ shieldok:'<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5L16 9.5"/>',
+ heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.6-7 10-7 10z"/><path d="M8 11h2l1.5-2.5L13 13l1-2h2"/>',
+ bot:'<rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 4v4M9 13v1M15 13v1"/>',
+ pulse:'<path d="M3 12h4l2-6 4 12 2-6h6"/>',
+ book:'<path d="M12 6c-2-1.5-5-2-8-2v14c3 0 6 .5 8 2 2-1.5 5-2 8-2V4c-3 0-6 .5-8 2z"/><path d="M12 6v14"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',
+ moon:'<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>',
+ out:'<path d="M9 4H5a1 1 0 00-1 1v14a1 1 0 001 1h4M16 8l4 4-4 4M20 12H9"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+ chev:'<path d="M9 6l6 6-6 6"/>',
+ drop:'<path d="M12 3c3.5 4 6 7 6 10a6 6 0 11-12 0c0-3 2.5-6 6-10z"/>',
+ sleep:'<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>',
+ help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.8.6-1.5 1-1.5 2M12 17h.01"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+ trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',
+ trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+ target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+ send:'<path d="M4 12l16-8-6 16-3-7z"/>',
+ ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/>'
+};
+function ic(n,s){s=s||20;return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[n]+'</svg>'}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+/* ---------- store (kept in this browser only) ---------- */
+var KEY='carehub.v1', db={users:{},session:null,theme:null};
+try{var raw=localStorage.getItem(KEY);if(raw)db=Object.assign(db,JSON.parse(raw))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+function me(){return db.session&&db.users[db.session]||null}
+function applyTheme(){if(db.theme)document.documentElement.setAttribute('data-theme',db.theme)}
+function isDark(){var a=document.documentElement.getAttribute('data-theme');if(a)return a==='dark';return window.matchMedia('(prefers-color-scheme: dark)').matches}
+function sha(s){
+  if(window.crypto&&crypto.subtle&&window.TextEncoder){
+    return crypto.subtle.digest('SHA-256',new TextEncoder().encode('carehub:'+s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')});
+  }
+  return Promise.resolve('plain:'+s);
+}
+function iso(d){var y=d.getFullYear(),m=('0'+(d.getMonth()+1)).slice(-2),dd=('0'+d.getDate()).slice(-2);return y+'-'+m+'-'+dd}
+function todayISO(){return iso(new Date())}
+function toast(t){var el=document.getElementById('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true},2200)}
+
+/* ---------- content ---------- */
+var LIB=[
+ {id:'sleep',cat:'Sleep',src:'MedlinePlus',title:'Sleep and sleep disorders',sum:'A consistent sleep schedule, a relaxing bedtime routine, and a comfortable sleep environment can support healthy sleep.',rev:'2024-01',url:'https://medlineplus.gov/sleepdisorders.html'},
+ {id:'water',cat:'Hydration',src:'NHS',title:'Water, drinks and your health',sum:'Water is a healthy choice for hydration. Needs vary with activity, environment, age, and health conditions.',rev:'2023-09',url:'https://www.nhs.uk/live-well/eat-well/food-guidelines-and-food-labels/water-drinks-nutrition/'},
+ {id:'move',cat:'Movement',src:'World Health Organization',title:'Physical activity',sum:'Regular physical activity has significant health benefits and should be adapted to a person’s abilities and circumstances.',rev:null,url:'https://www.who.int/news-room/fact-sheets/detail/physical-activity'},
+ {id:'diet',cat:'Nutrition',src:'World Health Organization',title:'Healthy diet',sum:'A healthy diet includes variety, balance, moderation, and foods that meet individual nutritional needs.',rev:null,url:'https://www.who.int/news-room/fact-sheets/detail/healthy-diet'},
+ {id:'stress',cat:'Stress',src:'NIMH',title:'I’m so stressed out! Fact sheet',sum:'Everyone feels stress. Healthy routines, movement, rest, and talking with others can help, and long-lasting stress deserves professional support.',rev:null,url:'https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet'},
+ {id:'mind',cat:'Mental health',src:'World Health Organization',title:'Mental health: strengthening our response',sum:'Mental health is more than the absence of illness. Support, community, and care are part of everyday wellbeing.',rev:null,url:'https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response'}
+];
+function lib(id){return LIB.filter(function(x){return x.id===id})[0]}
+var OPT={
+ age:['Child','Teen','Adult','Older adult'],
+ lang:['English','Hindi','Marathi','Spanish','French'],
+ diet:['No preference','Vegetarian','Vegan','Gluten-free','Dairy-free','Low sodium'],
+ act:['Light','Moderate','Active','Very active'],
+ goal:['Build healthier routines','Sleep better','Drink more water','Move more','Manage stress','Eat more balanced meals']
+};
+var NAMES={overview:'Overview',guidance:'Guided chat',tracker:'Wellness tracker',library:'Health library',profile:'Profile & privacy'};
+var ICONS={overview:'heart',guidance:'bot',tracker:'pulse',library:'book',profile:'gear'};
+
+/* ---------- guided chatbot: a fixed bank of questions, never free text ---------- */
+var TOPICS=[{id:'sleep',n:'Sleep'},{id:'water',n:'Hydration'},{id:'stress',n:'Stress'},{id:'diet',n:'Nutrition'},{id:'move',n:'Movement'},{id:'safety',n:'Safety & privacy'}];
+var curTopic='sleep';
+function pc(u){var p=u.profile||{};return p.consent?p:{}}
+function avg(u){
+  var e=u.entries||[],n=e.length;if(!n)return{};
+  var f=function(k){return Math.round(e.reduce(function(a,x){return a+(+x[k]||0)},0)/n*10)/10};
+  return{water:f('water'),sleep:f('sleep'),move:f('move')};
+}
+var END_SLEEP='\n\nIf poor sleep goes on for weeks or affects your day, mention it to a clinician.';
+var QA=[
+ {t:'sleep',q:'How can I improve my sleep routine?',s:['sleep'],k:'edu',a:function(u){var c=pc(u),A=avg(u);
+  return 'General education on sleep:\n• Keep a consistent wake time, even on days off.\n• Build a short wind-down routine: dim lights, put screens away, do something calm.\n• Make the room dark, quiet, and comfortable.\n• Go easy on caffeine and large meals late in the day.'+
+  (c.sleep?'\n\nYou set a goal of '+c.sleep+' hours.'+(A.sleep?' Your logged average is '+A.sleep+' h, so a small, steady shift in bedtime may be a gentler start than a big change.':''):'')+END_SLEEP}},
+ {t:'sleep',q:'What should I do in the hour before bed?',s:['sleep'],k:'edu',a:function(){return 'Ideas that fit a wind-down hour:\n• Dim the lights and set screens aside.\n• Do something calm: reading, stretching, a warm shower, quiet music.\n• Write tomorrow’s to-do list so it is out of your head.\n• Keep the same order each night so your body learns the cue.'}},
+ {t:'sleep',q:'How much sleep do I need?',s:['sleep'],k:'edu',a:function(u){var c=pc(u);return 'Most adults do well with roughly 7 to 9 hours, and needs change with age and from person to person. Check the linked source for age-specific ranges.'+(c.sleep?'\n\nYour own goal is set to '+c.sleep+' hours. You can change it in Profile & privacy.':'')}},
+ {t:'sleep',q:'When should I talk to a clinician about sleep?',s:['sleep'],k:'edu',a:function(){return 'Consider speaking with a clinician if:\n• Trouble sleeping lasts for weeks.\n• You feel very sleepy during the day.\n• You or someone else notices loud snoring, or pauses in breathing at night.\n\nBring your sleep log from the Wellness tracker. It makes the visit more useful.'}},
+
+ {t:'water',q:'Suggest healthy hydration habits',s:['water'],k:'edu',a:function(u){var c=pc(u),A=avg(u);
+  return 'General education on hydration:\n• Water is a healthy everyday choice.\n• Needs vary with activity, heat, age, and health conditions.\n• Tie drinks to routines: a glass on waking, one with each meal, a bottle within reach.'+
+  (c.water?'\n\nYour goal is '+c.water+' glasses a day.'+(A.water?' You logged '+A.water+' on average. Try anchoring one extra glass to a habit you already have.':''):'')+'\n\nIf you have a condition that affects fluids, ask your clinician what is right for you.'}},
+ {t:'water',q:'How much water should I drink?',s:['water'],k:'edu',a:function(u){var c=pc(u);return 'There is no single number that fits everyone. Needs depend on activity, weather, age, and health conditions. Many people use a simple personal goal and adjust it on hot or active days.'+(c.water?'\n\nYour goal is '+c.water+' glasses. You can change it in Profile & privacy.':'')+'\n\nIf you have a heart, kidney, or other condition, ask your clinician about fluids.'}},
+ {t:'water',q:'Do tea, coffee, and other drinks count?',s:['water'],k:'edu',a:function(){return 'Many drinks add to your fluid intake, but water is a healthy everyday choice. Sugary drinks are best kept occasional. The linked NHS page covers which drinks to favor and which to limit.'}},
+
+ {t:'stress',q:'What helps manage everyday stress?',s:['stress','mind'],k:'edu',a:function(){return 'General education on everyday stress:\n• Regular movement, sleep, and meals make stress easier to carry.\n• Slow breathing, a short walk, or a pause between tasks can take the edge off.\n• Talking with someone you trust helps.\n• Stress that lasts, or gets in the way of daily life, is a good reason to speak with a health professional.'}},
+ {t:'stress',q:'How can I calm down in the moment?',s:['stress'],k:'edu',a:function(){return 'Quick options to try:\n• Breathe in slowly, then out for longer than you breathed in, for a minute or two.\n• Step away from the task and take a short walk.\n• Name what you are feeling and what is in your control right now.\n\nIf you feel unsafe or at risk of harming yourself, use the urgent question under Safety & privacy.'}},
+ {t:'stress',q:'When is stress a reason to get support?',s:['stress','mind'],k:'edu',a:function(){return 'Reach out to a health professional if stress:\n• Lasts for weeks.\n• Disrupts sleep, eating, work, or relationships.\n• Comes with feelings of hopelessness.\n\nAsking early is a normal, sensible step. A trusted friend or family member can help you take it.'}},
+
+ {t:'diet',q:'What does a healthy diet look like?',s:['diet'],k:'edu',a:function(u){var c=pc(u);return 'General education on eating:\n• Aim for variety: vegetables, fruit, whole grains, legumes, and protein sources.\n• Go lighter on salt, added sugar, and heavily processed foods.\n• Balance and moderation matter more than any single food.'+(c.diet&&c.diet!=='No preference'?'\n\nYou noted a '+c.diet.toLowerCase()+' preference, so look for options that fit it across the groups above.':'')}},
+ {t:'diet',q:'How can I eat more balanced meals?',s:['diet'],k:'edu',a:function(){return 'Simple ways to start:\n• Add one vegetable or fruit to each meal.\n• Swap one refined grain for a whole grain.\n• Plan two or three easy meals you can repeat.\n• Keep water or an unsweetened drink as the default.'}},
+ {t:'diet',q:'Who can help with a special diet or allergy?',s:['diet'],k:'edu',a:function(){return 'For medical diets, food allergies, or unintended weight change, a clinician or registered dietitian can tailor advice to you. General education here cannot replace that.'}},
+
+ {t:'move',q:'How much activity do adults need?',s:['move'],k:'edu',a:function(u){var c=pc(u);return 'For most adults, the WHO suggests building up to 150–300 minutes of moderate activity a week, adapted to your abilities. Any movement counts, and short walks add up.'+(c.act?'\n\nYou described your activity as '+c.act.toLowerCase()+'. Pick the next small step from there.':'')}},
+ {t:'move',q:'How do I start moving more?',s:['move'],k:'edu',a:function(){return 'Start small and raise it gradually:\n• Add a 10-minute walk after a meal.\n• Take stairs when you can.\n• Pair movement with something you enjoy, like music or a call.\n• Log minutes in the Wellness tracker to see your own pattern.'}},
+ {t:'move',q:'What if I have pain or a health condition?',s:['move'],k:'edu',a:function(){return 'Activity can usually be adapted to your abilities and circumstances. If you have pain, a long-term condition, or are recovering, check with a clinician before big changes and ask what is safe to start with.'}},
+
+ {t:'safety',q:'I have urgent symptoms. What should I do?',s:[],k:'urgent',a:function(){return 'Please contact your local emergency services now, or go to the nearest emergency department. This applies to chest pain, trouble breathing, signs of a stroke, severe bleeding, fainting, a seizure, a possible overdose, or thoughts of harming yourself.\n\nIf you are thinking about harming yourself, reach out to a crisis line in your country or to someone near you right away.\n\nCareHub cannot assess emergencies, and you should not wait on an app for this.'}},
+ {t:'safety',q:'Can CareHub tell me what condition I have?',s:['mind'],k:'decline',a:function(){return 'No. CareHub does not diagnose. If symptoms are new, getting worse, or worrying you, a clinician is the right person to ask. Writing down when they started, what changes them, and your questions can make that visit more useful.'}},
+ {t:'safety',q:'Can CareHub tell me what medicine dose to take?',s:[],k:'decline',a:function(){return 'No. CareHub never gives doses or tells you to start, stop, or change a medicine. A pharmacist or the clinician who prescribed it can give you the right answer for your situation.'}},
+ {t:'safety',q:'How is my information used?',s:[],k:'edu',a:function(){return 'Your records are kept in your account. Optional health context is used to tailor general education only when you tick the consent box in Profile & privacy. You can delete your data at any time from the same page.'}}
+];
+
+/* ---------- routing ---------- */
+var AUTHED=['overview','guidance','tracker','library','profile'];
+function route(){var h=(location.hash||'').replace('#','');return h}
+function go(h){if(location.hash==='#'+h)render();else location.hash='#'+h}
+window.addEventListener('hashchange',render);
+
+function render(){
+  var r=route(), u=me();
+  if(AUTHED.indexOf(r)>-1){ if(!u){go('login');return} app(r,u); }
+  else if(r==='login'||r==='join'){ if(u){go('overview');return} auth(r); }
+  else { if(u&&!r){/* stay on landing if signed in? send to app */ go('overview');return} landing(); }
+  window.scrollTo(0,0);
+}
+var $=document.getElementById('app');
+
+/* ---------- landing ---------- */
+function landing(){
+  $.innerHTML=
+  '<div class="wrap"><div class="land-head"><button class="logo" data-go="">'+'<i>'+ic('spark',22)+'</i>CareHub</button>'+
+  '<nav class="land-nav"><button class="lnk" data-scroll="how">How it works</button><button class="lnk" data-scroll="safety">Safety</button><button class="btn primary" data-go="login">Sign in</button></nav></div>'+
+  '<section class="hero"><div><div class="eyebrow">● Evidence-aware everyday guidance</div>'+
+  '<h1>A calmer way to make sense of your health.</h1>'+
+  '<p class="lead">CareHub combines your wellness goals with trusted public-health education, so your next step feels clear, not overwhelming.</p>'+
+  '<div class="cta"><button class="btn primary lg" data-go="join">Create your private space '+ic('arrow',18)+'</button><button class="btn lg" data-scroll="how">See how it works '+ic('chev',18)+'</button></div>'+
+  '<div class="trust"><span>'+ic('shieldok',18)+'Private by default</span><span>'+ic('book',18)+'Trusted sources</span><span>'+ic('heart',18)+'Not a diagnosis</span></div></div>'+
+  '<div class="mock"><div class="mock-head"><div class="ic">'+ic('spark',20)+'</div><div><b>CareHub assistant</b><small>Grounded wellness guidance</small></div><span class="dot"></span></div>'+
+  '<div class="bubble u">How can I build a better sleep routine?</div>'+
+  '<div class="bubble a">Start with a consistent wake time, a wind-down routine, and a sleep environment that supports rest. Here are trusted sources to explore.</div>'+
+  '<div class="tags"><span class="tag">2 sources cited</span><span class="tag warn">Education only</span></div>'+
+  '<div class="note">Your questions stay in your private account.</div></div></section></div>'+
+  '<section class="sec" id="how"><div class="wrap"><div class="eyebrow">How it works</div><h2>Useful context without unnecessary collection.</h2>'+
+  '<div class="grid3">'+
+  '<div class="card step"><div class="top"><span>01</span>'+ic('user',22)+'</div><div><h3>Set your context</h3><p>Choose only the preferences that make everyday guidance more relevant to you.</p></div></div>'+
+  '<div class="card step"><div class="top"><span>02</span>'+ic('book',22)+'</div><div><h3>Ask &amp; explore</h3><p>Chat about wellness topics and open the public-health source behind the answer.</p></div></div>'+
+  '<div class="card step"><div class="top"><span>03</span>'+ic('trend',22)+'</div><div><h3>Notice patterns</h3><p>Log your own water, sleep, and movement entries. Nothing is fabricated.</p></div></div>'+
+  '</div></div></section>'+
+  '<section class="sec" id="safety" style="padding-top:24px"><div class="wrap guard-wrap"><div><div class="eyebrow">Designed with guardrails</div><h2>Helpful when it can be. Clear when it cannot.</h2></div>'+
+  '<div class="guard-grid">'+
+  g('No diagnoses','CareHub does not determine what condition you have.')+
+  g('No prescriptions','It never gives doses or tells you to change treatment.')+
+  g('Urgent escalation','Potential emergency terms trigger direct emergency guidance.')+
+  g('Source transparency','Approved sources stay attached to each answer.')+
+  '</div></div></section>'+
+  '<div class="wrap"><div class="foot"><span>© 2026 CareHub · Health education, not medical care</span><span>Built for informed everyday wellness</span></div></div>';
+  function g(a,b){return '<div class="card guard"><h3>'+ic('check',18)+a+'</h3><p>'+b+'</p></div>'}
+}
+
+/* ---------- auth ---------- */
+function auth(mode){
+  var join=mode==='join';
+  $.innerHTML='<div class="auth"><div class="auth-l"><button class="logo" data-go="" style="color:#fff"><i>'+ic('spark',22)+'</i>CareHub</button>'+
+  '<div><div class="eyebrow">Calm, informed next steps</div><h1>Health guidance that keeps the human in charge.</h1>'+
+  '<p class="lead">Organize your wellness habits, ask better questions, and explore public-health sources without the noise.</p>'+
+  '<ul><li>'+ic('check',18)+'Personalized to your goals, never a diagnosis</li><li>'+ic('check',18)+'Grounded in trusted public-health sources</li><li>'+ic('check',18)+'Private by default with clear controls</li></ul></div><div></div></div>'+
+  '<div class="auth-r"><form class="auth-box" id="authf" novalidate><div class="shield">'+ic('shieldok',28)+'</div>'+
+  '<h2>'+(join?'Start with CareHub':'Welcome back')+'</h2><p class="sub">'+(join?'Create a private space for your everyday wellness.':'Sign in to your private space.')+'</p>'+
+  (join?'<label class="f" for="a-name">Your name</label><input class="in" id="a-name" autocomplete="name">':'')+
+  '<label class="f" for="a-email">Email</label><input class="in" id="a-email" type="email" autocomplete="email">'+
+  '<label class="f" for="a-pw">Password</label><input class="in" id="a-pw" type="password" autocomplete="'+(join?'new-password':'current-password')+'">'+
+  (join?'<div class="hint">Use at least 8 characters.</div>':'')+
+  '<div id="a-err"></div><button class="btn primary" type="submit">'+(join?'Create private account':'Sign in')+'</button>'+
+  '<p class="swap">'+(join?'Already have an account? <button type="button" data-go="login">Sign in</button>':'New here? <button type="button" data-go="join">Create an account</button>')+'</p>'+
+  '<p class="hint" style="margin-top:18px">Prototype: accounts and entries are stored only in this browser.</p></form></div></div>';
+  document.getElementById('authf').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var name=join?document.getElementById('a-name').value.trim():'';
+    var email=document.getElementById('a-email').value.trim().toLowerCase();
+    var pw=document.getElementById('a-pw').value;
+    var err=document.getElementById('a-err');
+    function bad(m){err.innerHTML='<div class="err" role="alert">'+esc(m)+'</div>'}
+    if(join&&!name)return bad('Enter your name so CareHub can greet you.');
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return bad('Enter a valid email address, like name@example.com.');
+    if(pw.length<8)return bad('Your password needs at least 8 characters.');
+    sha(pw).then(function(h){
+      if(join){
+        if(db.users[email])return bad('That email already has an account. Sign in instead.');
+        db.users[email]={name:name,email:email,pw:h,profile:{age:'Adult',lang:'English',diet:'No preference',act:'Moderate',sleep:8,water:8,goal:'Build healthier routines',context:'',consent:false},entries:[],chat:[]};
+        db.session=email;save();go('overview');
+      } else {
+        var u=db.users[email];
+        if(!u||u.pw!==h)return bad('That email and password do not match. Check them and try again.');
+        db.session=email;save();go('overview');
+      }
+    });
+  });
+}
+
+/* ---------- app shell ---------- */
+function app(view,u){
+  var nav=AUTHED.map(function(k){return '<a href="#'+k+'"'+(k===view?' aria-current="page"':'')+'>'+ic(ICONS[k],20)+NAMES[k]+'</a>'}).join('');
+  $.innerHTML=
+  '<header class="top"><button class="logo" data-go="overview"><i>'+ic('spark',20)+'</i>CareHub</button><div class="top-r">'+
+  '<a class="pill emerg" href="#guidance" data-emerg="1">'+ic('shield',16)+'<span class="long">Emergency? </span>Call local services</a>'+
+  '<button class="iconbtn" data-toggle-theme aria-label="Toggle dark mode">'+ic('moon',20)+'</button>'+
+  '<button class="btn sm" data-signout style="padding:10px 16px">Sign out '+ic('out',16)+'</button></div></header>'+
+  '<div class="shell"><aside class="side"><div class="who"><small class="eyebrow">Your health space</small><b>'+esc(u.name)+'</b><span>'+esc(u.email)+'</span></div>'+
+  '<nav class="nav" aria-label="Main">'+nav+'</nav>'+
+  '<div class="safety"><div class="eyebrow">Safety first</div><p>CareHub shares education, not diagnoses. For urgent symptoms, contact local emergency services.</p></div></aside>'+
+  '<main class="main" id="main"></main></div>';
+  var m=document.getElementById('main');
+  ({overview:vOverview,guidance:vGuidance,tracker:vTracker,library:vLibrary,profile:vProfile})[view](m,u);
+}
+
+/* overview */
+function entryFor(u,d){return (u.entries||[]).filter(function(e){return e.date===d})[0]}
+function vOverview(m,u){
+  var t=entryFor(u,todayISO())||{water:0,sleep:0,move:0}, p=u.profile;
+  var h=new Date().getHours(), gr=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
+  var asked=(u.chat||[]).filter(function(x){return x.r==='u'}).length;
+  function st(ico,bg,fg,val,lab,sub){return '<div class="card stat"><div class="ic" style="background:'+bg+';color:'+fg+'">'+ic(ico,22)+'</div><b>'+val+'</b><strong>'+lab+'</strong><span>'+sub+'</span></div>'}
+  m.innerHTML='<header class="row-h"><div><div class="eyebrow">Personal wellness cockpit</div><h1>'+gr+', '+esc(u.name)+'.</h1><p class="sub">A calm view of your everyday habits, questions, and trusted health education.</p></div>'+
+  '<button class="btn primary" data-go="guidance">'+ic('bot',18)+'Ask CareHub</button></header>'+
+  '<div class="stats">'+
+  st('drop','var(--mint-soft)','var(--c1)',(t.water||0)+'/'+(p.water||8),'Water glasses','Today’s logged intake')+
+  st('sleep','var(--mint-soft)','var(--c2)',(t.sleep||0)+'h','Sleep','Goal '+(p.sleep||8)+' hours')+
+  st('pulse','var(--mint-soft)','var(--c3)',(t.move||0)+'m','Movement','Minutes logged today')+
+  st('help','var(--mint-soft)','var(--c2)',asked,'Questions asked','Private conversations')+'</div>'+
+  '<div class="two"><div class="card chart-card"><div class="top2"><span class="eyebrow" style="color:var(--muted)">Your rhythm</span><button class="link" data-go="tracker">View tracker '+ic('chev',16)+'</button></div><h3>Weekly wellness signals</h3>'+chart(u)+'</div>'+
+  '<div class="card steps-card"><span>'+ic('target',26)+'</span><h3>Small steps count.</h3><p>Choose a next step that fits your life, then use your own entries to notice patterns.</p><button class="link" data-go="library">Explore trusted sources '+ic('chev',16)+'</button></div></div>';
+}
+function chart(u){
+  var days=[],i;for(i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d)}
+  var has=(u.entries||[]).some(function(e){return days.some(function(d){return iso(d)===e.date})});
+  if(!has) return '<div class="empty">No check-ins in the last 7 days yet. Log one and your pattern will show here.<br><button class="btn sm" data-go="tracker">Log a check-in</button></div>';
+  var W=640,H=230,L=44,R=14,T=14,B=34,pw=W-L-R,ph=H-T-B,p=u.profile;
+  var S=[{k:'water',c:'var(--c1)',g:+p.water||8,n:'Water'},{k:'sleep',c:'var(--c2)',g:+p.sleep||8,n:'Sleep'},{k:'move',c:'var(--c3)',g:30,n:'Movement (30 min = 100%)'}];
+  var X=function(i){return L+pw*i/6}, Y=function(v){return T+ph*(1-Math.min(v,120)/120)};
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="min-width:420px" role="img" aria-label="Weekly water, sleep and movement as a percent of goal">';
+  [0,50,100].forEach(function(v){s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)" '+(v===100?'stroke-dasharray="4 4"':'')+'/><text x="'+(L-8)+'" y="'+(Y(v)+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+v+'%</text>'});
+  days.forEach(function(d,i){s+='<text x="'+X(i)+'" y="'+(H-10)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+d.toLocaleDateString('en',{weekday:'short'})+'</text>'});
+  S.forEach(function(se){
+    var pts=[];days.forEach(function(d,i){var e=entryFor(u,iso(d));if(e)pts.push([X(i),Y((+e[se.k]||0)/se.g*100)])});
+    if(pts.length>1)s+='<polyline fill="none" stroke="'+se.c+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="'+pts.map(function(p){return p.join(',')}).join(' ')+'"/>';
+    pts.forEach(function(p,j){s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(j===pts.length-1?5:3.5)+'" fill="'+se.c+'"/>'});
+  });
+  s+='</svg>';
+  return '<div class="chart-wrap">'+s+'</div><div class="legend">'+S.map(function(x){return '<span><i style="background:'+x.c+'"></i>'+x.n+'</span>'}).join('')+'<span>Dashed line = goal</span></div>';
+}
+
+/* guidance */
+function vGuidance(m,u){
+  m.innerHTML='<header class="row-h"><div><div class="eyebrow">Symptom education &amp; wellness</div><h1>Ask with context. Act with care.</h1><p class="sub">Pick a question and CareHub shows approved public-health guidance with its sources. It never diagnoses or replaces a clinician.</p></div>'+
+  '<button class="btn" data-clear>'+ic('trash',16)+'Clear chat</button></header>'+
+  '<div class="card chat"><div class="chat-h"><div class="ic">'+ic('bot',22)+'</div><div><b>CareHub guide</b><small>Grounded wellness education · private session</small></div><span class="ready"><i></i>Ready</span></div>'+
+  '<div class="msgs" id="msgs" aria-live="polite"></div><div class="qpanel" id="qpanel"></div></div>';
+  drawMsgs(u);drawPanel(u);
+}
+function asked(u,q){return u.chat.some(function(c){return c.r==='u'&&c.t===q})}
+function drawPanel(u){
+  var el=document.getElementById('qpanel');if(!el)return;
+  el.innerHTML='<div class="qh">Choose a question</div><div class="topics" role="tablist">'+
+  TOPICS.map(function(t){return '<button role="tab" aria-selected="'+(t.id===curTopic)+'" class="topic'+(t.id===curTopic?' on':'')+'" data-topic="'+t.id+'">'+t.n+'</button>'}).join('')+'</div><div class="qlist">'+
+  QA.map(function(x,i){return x.t===curTopic?'<button class="qbtn'+(asked(u,x.q)?' done':'')+'" data-q="'+i+'"><span>'+esc(x.q)+'</span>'+(asked(u,x.q)?ic('check',16):ic('chev',16))+'</button>':''}).join('')+'</div>';
+}
+function drawMsgs(u){
+  var el=document.getElementById('msgs');if(!el)return;
+  if(!u.chat.length){
+    el.innerHTML='<div class="welcome">'+ic('spark',40)+'<h2>What would you like to understand?</h2><p>Choose a question below about sleep, hydration, nutrition, movement, or stress. You’ll see the sources behind each answer.</p><div class="chips">'+
+    [0,4,7].map(function(i){return '<button class="chip" data-q="'+i+'">'+esc(QA[i].q)+'</button>'}).join('')+'</div></div>';return;
+  }
+  el.innerHTML=u.chat.map(function(c){
+    if(c.r==='u')return '<div class="m u">'+esc(c.t)+'</div>';
+    return '<div class="m a'+(c.k==='urgent'?' urgent':'')+'">'+esc(c.t)+
+    (c.s&&c.s.length?'<div class="srcs">'+c.s.map(function(id){var l=lib(id);return l?'<a href="'+l.url+'" target="_blank" rel="noopener">'+esc(l.src)+': '+esc(l.title)+'</a>':''}).join('')+'</div>':'')+
+    '<div class="srcs"><span class="tag '+(c.k==='edu'?'warn':'')+'">'+(c.k==='urgent'?'Urgent guidance':c.k==='decline'?'Outside what CareHub can do':'Education only')+'</span></div></div>';
+  }).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function ask(i,u){
+  var x=QA[i];if(!x)return;
+  var qo={r:'u',t:x.q};u.chat.push(qo);drawMsgs(u);drawPanel(u);
+  var el=document.getElementById('msgs');el.insertAdjacentHTML('beforeend','<div class="m a typing" id="typ">Looking at approved sources…</div>');el.scrollTop=el.scrollHeight;
+  save();
+  setTimeout(function(){
+    if(u.chat.indexOf(qo)<0)return;
+    u.chat.push({r:'a',t:x.a(u),s:x.s,k:x.k});save();
+    if(document.getElementById('msgs'))drawMsgs(u);
+  },450);
+}
+
+/* tracker */
+function vTracker(m,u){
+  var p=u.profile;
+  m.innerHTML='<header><h1>Wellness tracker</h1><p class="sub">Only values you log appear here. Use check-ins to notice patterns, not to grade yourself.</p></header>'+
+  '<div class="tgrid"><form class="card" id="tf" novalidate><h3 class="t">Log a check-in</h3><p class="sm">Your data stays private to your account.</p>'+
+  '<label class="f" for="t-date">Date</label><input class="in" type="date" id="t-date" value="'+todayISO()+'" max="'+todayISO()+'">'+
+  '<label class="f" for="t-water">Water glasses</label><input class="in" type="number" id="t-water" min="0" max="30" step="1" value="0"><div class="hint">Goal: '+(p.water||8)+'</div>'+
+  '<label class="f" for="t-sleep">Sleep hours</label><input class="in" type="number" id="t-sleep" min="0" max="24" step="0.5" value="0"><div class="hint">Goal: '+(p.sleep||8)+'</div>'+
+  '<label class="f" for="t-move">Activity minutes</label><input class="in" type="number" id="t-move" min="0" max="600" step="5" value="0">'+
+  '<label class="f" for="t-note">How did today feel?</label><textarea class="in" id="t-note" maxlength="280" placeholder="Optional note"></textarea>'+
+  '<div id="t-err"></div><div style="margin-top:20px;display:flex;align-items:center"><button class="btn primary" type="submit">Save check-in</button></div></form>'+
+  '<div class="card"><div class="eyebrow" style="color:var(--muted)">Your entries</div><h3 class="t" style="font-size:26px;margin-top:6px">Recent check-ins</h3><div id="elist"></div></div></div>';
+  drawEntries(u);
+  document.getElementById('tf').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var d=document.getElementById('t-date').value,w=+document.getElementById('t-water').value,s=+document.getElementById('t-sleep').value,a=+document.getElementById('t-move').value;
+    var err=document.getElementById('t-err');
+    if(!d){err.innerHTML='<div class="err">Pick a date for this check-in.</div>';return}
+    if(w<0||s<0||a<0||s>24||isNaN(w+s+a)){err.innerHTML='<div class="err">Enter numbers that make sense: sleep between 0 and 24 hours, no negative values.</div>';return}
+    err.innerHTML='';
+    u.entries=u.entries.filter(function(e){return e.date!==d});
+    u.entries.push({date:d,water:w,sleep:s,move:a,note:document.getElementById('t-note').value.trim()});
+    u.entries.sort(function(a,b){return a.date<b.date?1:-1});save();drawEntries(u);ev.target.reset();document.getElementById('t-date').value=todayISO();toast('Check-in saved. The form is ready for a new entry.');
+  });
+}
+function drawEntries(u){
+  var el=document.getElementById('elist');if(!el)return;
+  if(!u.entries.length){el.innerHTML='<div class="empty" style="margin-top:14px">Nothing logged yet. Save your first check-in, or load three example days to see how the tracker looks.<br><button class="btn sm" data-sample>Load example entries</button></div>';return}
+  el.innerHTML=u.entries.slice(0,14).map(function(e){
+    return '<div class="entry"><div><b>'+e.date+'</b><p>'+e.water+' glasses · '+e.sleep+'h sleep · '+e.move+'m movement</p>'+(e.note?'<p class="note">'+esc(e.note)+'</p>':'')+'</div><button class="del" data-del="'+e.date+'" aria-label="Delete entry '+e.date+'">'+ic('trash',15)+'Delete</button></div>';
+  }).join('');
+}
+
+/* library */
+function vLibrary(m,u){
+  m.innerHTML='<header><h1>Health library</h1><p class="sub">Explore source-preserving education from MedlinePlus, NHS, WHO, and NIMH.</p></header>'+
+  '<form class="search" id="sf"><label for="sq" style="position:absolute;left:-9999px">Search the library</label><input class="in" id="sq" placeholder="Search sleep, nutrition, stress…"><button class="btn primary" type="submit" style="padding-inline:28px">Search</button></form><div class="lib" id="lib"></div>';
+  function draw(q){
+    q=(q||'').toLowerCase();
+    var r=LIB.filter(function(x){return !q||(x.title+x.sum+x.cat+x.src).toLowerCase().indexOf(q)>-1});
+    document.getElementById('lib').innerHTML=r.length?r.map(function(x){
+      return '<article class="card"><div class="meta"><span class="tag">'+esc(x.cat)+'</span><span>'+esc(x.src)+'</span></div><h3>'+esc(x.title)+'</h3><p>'+esc(x.sum)+'</p><div class="foot2"><span>'+(x.rev?'Reviewed '+x.rev:'See source for review date')+'</span><a href="'+x.url+'" target="_blank" rel="noopener">Read source '+ic('chev',14)+'</a></div></article>';
+    }).join(''):'<div class="empty" style="grid-column:1/-1">No library entries match “'+esc(q)+'”. Try sleep, water, stress, diet, or activity.</div>';
+  }
+  draw('');
+  document.getElementById('sf').addEventListener('submit',function(e){e.preventDefault();draw(document.getElementById('sq').value)});
+  document.getElementById('sq').addEventListener('input',function(e){draw(e.target.value)});
+}
+
+/* profile */
+function sel(id,list,val){return '<select class="in" id="'+id+'">'+list.map(function(x){return '<option'+(x===val?' selected':'')+'>'+esc(x)+'</option>'}).join('')+'</select>'}
+function vProfile(m,u){
+  var p=u.profile;
+  m.innerHTML='<header><h1>Profile &amp; privacy</h1><p class="sub">Only use optional context if you consent. You can delete your data at any time.</p></header>'+
+  '<div class="pgrid"><form class="card" id="pf" novalidate><p class="sm" style="margin:0 0 4px">Signed in as '+esc(u.email)+'</p><div class="fgrid">'+
+  '<div><label class="f" for="p-age">Age group</label>'+sel('p-age',OPT.age,p.age)+'</div>'+
+  '<div><label class="f" for="p-lang">Preferred language</label>'+sel('p-lang',OPT.lang,p.lang)+'</div>'+
+  '<div><label class="f" for="p-diet">Dietary preference</label>'+sel('p-diet',OPT.diet,p.diet)+'</div>'+
+  '<div><label class="f" for="p-act">Activity level</label>'+sel('p-act',OPT.act,p.act)+'</div>'+
+  '<div><label class="f" for="p-sleep">Sleep goal (hours)</label><input class="in" type="number" id="p-sleep" min="4" max="14" step="0.5" value="'+(p.sleep||8)+'"></div>'+
+  '<div><label class="f" for="p-water">Hydration goal (glasses)</label><input class="in" type="number" id="p-water" min="1" max="20" step="1" value="'+(p.water||8)+'"></div>'+
+  '<div style="grid-column:1/-1"><label class="f" for="p-goal">Wellness goal</label>'+sel('p-goal',OPT.goal,p.goal)+'</div></div>'+
+  '<label class="f" for="p-ctx">Optional health context</label><textarea class="in" id="p-ctx" maxlength="500" placeholder="Anything you want general guidance to keep in mind (optional)">'+esc(p.context)+'</textarea>'+
+  '<label class="check" for="p-consent"><input type="checkbox" id="p-consent"'+(p.consent?' checked':'')+'><span>I consent to using optional context for personalization.</span></label>'+
+  '<div id="p-err"></div><div style="margin-top:22px;display:flex;align-items:center"><button class="btn primary" type="submit">Save preferences</button></div></form>'+
+  '<div class="side-col"><div class="card privacy">'+ic('shieldok',26)+'<h3>Privacy by design</h3><p>Your records are isolated to your account. Admin views show aggregates only.</p></div>'+
+  '<div class="card"><h3 class="t" style="font-size:24px">Delete account</h3><p class="sm" style="margin-block:10px 16px;font-size:15px">Permanently removes your account, conversations, and wellness records.</p><div id="delbox"><button class="btn danger" data-del-ask>Delete my data</button></div></div></div></div>';
+  document.getElementById('pf').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var sl=+document.getElementById('p-sleep').value,wa=+document.getElementById('p-water').value,err=document.getElementById('p-err');
+    if(!(sl>=4&&sl<=14)||!(wa>=1&&wa<=20)){err.innerHTML='<div class="err">Sleep goal should be 4 to 14 hours and hydration goal 1 to 20 glasses.</div>';return}
+    err.innerHTML='';
+    var g=function(i){return document.getElementById(i).value};
+    u.profile={age:g('p-age'),lang:g('p-lang'),diet:g('p-diet'),act:g('p-act'),sleep:sl,water:wa,goal:g('p-goal'),context:g('p-ctx'),consent:document.getElementById('p-consent').checked};
+    save();toast('Preferences saved');
+  });
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-go],[data-scroll],[data-toggle-theme],[data-signout],[data-q],[data-topic],[data-clear],[data-del],[data-sample],[data-del-ask],[data-del-yes],[data-del-no],[data-emerg]');
+  if(!t)return;var u=me();
+  if(t.hasAttribute('data-emerg')){e.preventDefault();var eu=me();curTopic='safety';go('guidance');setTimeout(function(){if(!eu)return;var i=QA.findIndex(function(x){return x.k==='urgent'});if(i>-1&&!asked(eu,QA[i].q))ask(i,eu);else drawPanel(eu)},80);return}
+  if(t.hasAttribute('data-go')){go(t.getAttribute('data-go'));return}
+  if(t.hasAttribute('data-scroll')){var el=document.getElementById(t.getAttribute('data-scroll'));if(el)el.scrollIntoView({behavior:'smooth'});return}
+  if(t.hasAttribute('data-toggle-theme')){db.theme=isDark()?'light':'dark';document.documentElement.setAttribute('data-theme',db.theme);save();return}
+  if(t.hasAttribute('data-signout')){db.session=null;save();go('');return}
+  if(!u)return;
+  if(t.hasAttribute('data-q')){ask(+t.getAttribute('data-q'),u)}
+  else if(t.hasAttribute('data-topic')){curTopic=t.getAttribute('data-topic');drawPanel(u)}
+  else if(t.hasAttribute('data-clear')){u.chat=[];save();drawMsgs(u);drawPanel(u)}
+  else if(t.hasAttribute('data-del')){var d=t.getAttribute('data-del');u.entries=u.entries.filter(function(x){return x.date!==d});save();drawEntries(u);toast('Entry deleted')}
+  else if(t.hasAttribute('data-sample')){
+    [[1,5,8,0],[2,7,3.5,53],[3,6,7,30]].forEach(function(r){var d=new Date();d.setDate(d.getDate()-r[0]);var k=iso(d);if(!entryFor(u,k))u.entries.push({date:k,water:r[1],sleep:r[2],move:r[3],note:'Example entry'})});
+    u.entries.sort(function(a,b){return a.date<b.date?1:-1});save();drawEntries(u);toast('Example entries added. Delete them any time.')}
+  else if(t.hasAttribute('data-del-ask')){document.getElementById('delbox').innerHTML='<div class="confirm" role="alertdialog"><b>Delete your account and all records? This cannot be undone.</b><div style="display:flex;gap:10px"><button class="btn sm primary" style="background:var(--danger);border-color:var(--danger);color:#fff" data-del-yes>Yes, delete everything</button><button class="btn sm" data-del-no>Cancel</button></div></div>'}
+  else if(t.hasAttribute('data-del-no')){document.getElementById('delbox').innerHTML='<button class="btn danger" data-del-ask>Delete my data</button>'}
+  else if(t.hasAttribute('data-del-yes')){delete db.users[db.session];db.session=null;save();go('')}
+});
+applyTheme();render();
+})();
+</script>
+
+</body></html>
