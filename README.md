@@ -5,7 +5,7 @@
 
 It provides a simple and user-friendly dashboard to encourage healthy lifestyle choices and improve everyday wellness.
 
-## ✨ Features
+## Features
 
 - **Dashboard:** View daily wellness information in one place.
 - **Water Tracker:** Track daily water intake and monitor hydration goals.
@@ -17,13 +17,13 @@ It provides a simple and user-friendly dashboard to encourage healthy lifestyle 
 - **Responsive Interface:** User-friendly design for different screen sizes.
 - **Account Management:** Includes account deletion with confirmation.
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - HTML
 - CSS
 - JavaScript
 
-## 🚀 Getting Started
+## Getting Started
 
 To run CareHub locally:
 
@@ -32,17 +32,17 @@ To run CareHub locally:
 3. Locate the `index.html` file.
 4. Open `index.html` in your web browser.
 
-## 🌐 Live Demo
+## Live Demo
 
 Visit CareHub here:
 
 https://pahadesamiksha-ops.github.io/Carehub/
 
-## 📌 Project Purpose
+## Project Purpose
 
 The main purpose of CareHub is to encourage individuals to maintain healthy daily routines by tracking important wellness activities and providing easy access to health-related information.
 
-## ⚠️ Limitations
+## Limitations
 
 - User accounts and tracker entries are stored locally in the browser.
 - Data does not automatically sync across different devices or browsers.
