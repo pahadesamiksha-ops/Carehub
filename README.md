@@ -48,7 +48,7 @@ The main purpose of CareHub is to encourage individuals to maintain healthy dail
 - Data does not automatically sync across different devices or browsers.
 - Some features may require further improvements for production use.
 
-## 👩‍💻 Developed By
+## Developed By
 
 **Samiksha Pahade**
 
